@@ -21,6 +21,7 @@ private:
 
     Memory::MemorySystem& memory;
     NeAACDecHandle decoder = nullptr;
+    bool notInit = true;
 };
 
 } // namespace AudioCore::HLE
