@@ -102,9 +102,14 @@ BinaryMessage AACDecoder::Decode(const BinaryMessage& request) {
     u8* data = memory.GetFCRAMPointer(request.decode_aac_request.src_addr - Memory::FCRAM_PADDR);
     u32 data_len = request.decode_aac_request.size;
 
-    unsigned long sample_rate;
-    u8 num_channels;
-    auto init_result = NeAACDecInit(decoder, data, data_len, &sample_rate, &num_channels);
+    static unsigned long sample_rate;
+    static u8 num_channels;
+    static long init_result;
+    if (notInit) {
+        init_result = NeAACDecInit(decoder, data, data_len, &sample_rate, &num_channels);
+        notInit = false;
+    }
+
     if (init_result < 0) {
         LOG_ERROR(Audio_DSP, "Could not initialize FAAD2 AAC decoder for request: {}", init_result);
         return response;
